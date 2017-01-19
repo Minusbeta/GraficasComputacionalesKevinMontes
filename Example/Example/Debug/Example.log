@@ -1,0 +1,18 @@
+﻿Build started 1/18/2017 9:46:24 PM.
+     1>Project "C:\Users\Kevin\Documents\Visual Studio 2015\Projects\CLASS\Example\Example\Example.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I"C:\Users\Kevin\Documents\Visual Studio 2015\Projects\CLASS\Example\Librerias\SDL-1.2.14\include" /I"C:\Users\Kevin\Documents\Visual Studio 2015\Projects\CLASS\Example\Librerias\OGLES2\include" /I"C:\Users\Kevin\Documents\Visual Studio 2015\Projects\CLASS\Example\Librerias\DXMath\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _CRT_SECURE_NO_WARNINGS /D _DEBUG /D _LIB /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\Framework.pdb" /Gd /TP /analyze- /errorReport:prompt GLDriver.cpp
+         GLDriver.cpp
+     1>c:\users\kevin\documents\visual studio 2015\projects\class\example\example\gldriver.cpp(89): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\Lib.exe /OUT:"C:\Users\Kevin\Documents\Visual Studio 2015\Projects\CLASS\Example\Debug\Framework.lib" /NOLOGO Debug\Core.obj
+         Debug\GLDriver.obj
+         Debug\PrimitiveManager.obj
+         Debug\TriangleGL.obj
+         Debug\Win32Framework.obj
+         Example.vcxproj -> C:\Users\Kevin\Documents\Visual Studio 2015\Projects\CLASS\Example\Debug\Framework.lib
+     1>Done Building Project "C:\Users\Kevin\Documents\Visual Studio 2015\Projects\CLASS\Example\Example\Example.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.97
