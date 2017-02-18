@@ -9,11 +9,11 @@ void TestApp::InitVars() {
 
 void TestApp::CreateAssets() {	
 	PrimitiveMgr.SetVP(&VP);
-	int indexCube = PrimitiveMgr.CreateCube();
-	Cubes[0].CreateInstance(PrimitiveMgr.GetPrimitive(indexCube), &VP);
-	Cubes[1].CreateInstance(PrimitiveMgr.GetPrimitive(indexCube), &VP);
-	int indexTriangle = PrimitiveMgr.CreateTriangle();
-	Triangles[0].CreateInstance(PrimitiveMgr.GetPrimitive(indexTriangle), &VP);
+	int indexCerdo = PrimitiveMgr.CreateCerdo();
+	Cerdo[0].CreateInstance(PrimitiveMgr.GetPrimitive(indexCerdo), &VP);
+	//Cerdo[1].CreateInstance(PrimitiveMgr.GetPrimitive(indexCube), &VP);
+	//int indexTriangle = PrimitiveMgr.CreateTriangle();
+	//Triangles[0].CreateInstance(PrimitiveMgr.GetPrimitive(indexTriangle), &VP);
 
 	D3DXMATRIX View;
 	D3DXVECTOR3 Pos		= D3DXVECTOR3(0.0f,1.0f,5.0f);
@@ -39,7 +39,7 @@ void TestApp::OnUpdate() {
 	OnInput();
 
 
-	Cubes[0].TranslateAbsolute(Position.x, Position.y, Position.z);
+	/*Cubes[0].TranslateAbsolute(Position.x, Position.y, Position.z);
 	Cubes[0].RotateXAbsolute(Orientation.x);
 	Cubes[0].RotateYAbsolute(Orientation.y);
 	Cubes[0].RotateZAbsolute(Orientation.z);
@@ -59,7 +59,7 @@ void TestApp::OnUpdate() {
 	Cubes[1].ScaleAbsolute(0.15f);
 	Cubes[1].Update();
 
-	Triangles[0].Update();
+	Triangles[0].Update();*/
 
 	OnDraw();
 }
@@ -67,8 +67,8 @@ void TestApp::OnUpdate() {
 void TestApp::OnDraw() {
 	pFramework->pVideoDriver->Clear();
 	
-	Cubes[0].Draw();
-	Cubes[1].Draw();
+	Cerdo[0].Draw();
+	//Cubes[1].Draw();
 
 //	Triangles[0].Draw();
 

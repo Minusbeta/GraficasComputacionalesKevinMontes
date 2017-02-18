@@ -12,6 +12,7 @@ public:
 	}
 	int  CreateTriangle();
 	int	 CreateCube();
+	int CreateCerdo();
 
 	void DrawPrimitives();
 	void DestroyPrimitives();

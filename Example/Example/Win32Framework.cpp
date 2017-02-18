@@ -6,7 +6,8 @@
 #include <windows.h>
 #include <mmsystem.h>
 
-void Win32Framework::InitGlobalVars() {
+void Win32Framework::InitGlobalVars() 
+{
 
 	
 }

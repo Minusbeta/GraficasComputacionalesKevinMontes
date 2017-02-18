@@ -2,6 +2,7 @@
 #include "PrimitiveManager.h"
 #include "TriangleGL.h"
 #include "CubeGL.h"
+#include "MeshCerdo.h"
 
 PrimitiveBase*	PrimitiveManager::GetPrimitive(unsigned int index) {
 	if (index >= primitives.size())
@@ -19,6 +20,14 @@ int  PrimitiveManager::CreateTriangle() {
 
 int	 PrimitiveManager::CreateCube(){
 	PrimitiveBase *primitive = new CubeGL();
+	primitive->Create();
+	primitives.push_back(primitive);
+	return (int)(primitives.size() - 1);
+}
+
+int PrimitiveManager::CreateCerdo()
+{
+	PrimitiveBase *primitive = new CerdoGL();
 	primitive->Create();
 	primitives.push_back(primitive);
 	return (int)(primitives.size() - 1);
