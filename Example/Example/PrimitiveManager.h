@@ -4,15 +4,16 @@
 #include <vector>
 #include <d3dx9math.h>
 #include "PrimitiveBase.h"
+#include "CMatrix4D.h"
 
 class PrimitiveManager {
 public:
-	void SetVP(D3DXMATRIX *vp) {
+	void SetVP(CMatrix4D *vp) {
 		pVP = vp;
 	}
 	int  CreateTriangle();
 	int	 CreateCube();
-	int CreateCerdo();
+	int CreateCerdo(char *fname);
 
 	void DrawPrimitives();
 	void DestroyPrimitives();
@@ -20,7 +21,7 @@ public:
 
 	std::vector<PrimitiveBase*> primitives;
 
-	D3DXMATRIX *pVP;
+	CMatrix4D *pVP;
 };
 
 #endif

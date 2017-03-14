@@ -2,28 +2,29 @@
 
 void TestApp::InitVars() {
 	DtTimer.Init();
-	Position	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	Orientation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	Scaling		= D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	Position = CVector4D(0.0f, 0.0f, -1.0f, 1);
+	Orientation = CVector4D(0.0f, 0.0f, 0.0f, 0);
+	Offset = CVector4D(0, 0, 10.0f, 0);
+	OriVer = 0;
+	OriHor = 0;
 }
 
-void TestApp::CreateAssets() {	
+void TestApp::CreateAssets() {
 	PrimitiveMgr.SetVP(&VP);
-	int indexCerdo = PrimitiveMgr.CreateCerdo();
-	Cerdo[0].CreateInstance(PrimitiveMgr.GetPrimitive(indexCerdo), &VP);
-	//Cerdo[1].CreateInstance(PrimitiveMgr.GetPrimitive(indexCube), &VP);
-	//int indexTriangle = PrimitiveMgr.CreateTriangle();
-	//Triangles[0].CreateInstance(PrimitiveMgr.GetPrimitive(indexTriangle), &VP);
+	int indexMesh = PrimitiveMgr.CreateCerdo("Models/Scene.X");
+	Meshes[0].CreateInstance(PrimitiveMgr.GetPrimitive(indexMesh), &VP);
+	indexMesh = PrimitiveMgr.CreateCerdo("Models/Cerdo.X");
+	Meshes[1].CreateInstance(PrimitiveMgr.GetPrimitive(indexMesh), &VP);
+	/*int indexTriangle = PrimitiveMgr.CreateTriangle();
+	Triangles[0].CreateInstance(PrimitiveMgr.GetPrimitive(indexTriangle), &VP);*/
+	CMatrix4D View;
+	CVector4D Pos = CVector4D(0.0f, 1.0f, 5.0f, 1);
+	Up = CVector4D(0.0f, 1.0f, 0.0f, 0);
+	CVector4D LookAt = CVector4D(0.0001f, 0.0001f, 0.0001f, 1) - Pos;
 
-	D3DXMATRIX View;
-	D3DXVECTOR3 Pos		= D3DXVECTOR3(0.0f,1.0f,5.0f);
-	D3DXVECTOR3 Up		= D3DXVECTOR3(0.0f,1.0f,0.0f);
-	D3DXVECTOR3 LookAt	= D3DXVECTOR3(0.0001f, 0.0001f, 0.0001f) - Pos;
-	D3DXMatrixLookAtRH(&View,&Pos,&LookAt,&Up);
-	D3DXMATRIX Proj;
-
-	D3DXMatrixPerspectiveFovRH(&Proj,D3DXToRadian(45.0f),1280.0f/720.0f,0.1f,1000.0f);
-	//	D3DXMatrixOrthoRH(&Proj, 1280.0f / 720.0f, 1.0f , 0.1, 100.0f);
+	View = LookAtRH(Pos, LookAt, Up);
+	CMatrix4D Proj;
+	Proj = PerspectiveFovRH(45 * 3.1416 / 180, 1280.0f / 720.0f, 1.0f, 10000.0f);
 	VP = View*Proj;
 
 
@@ -38,106 +39,141 @@ void TestApp::OnUpdate() {
 
 	OnInput();
 
+	Offset.x = cosf(OriVer) * sinf(OriHor);
+	Offset.y = sinf(OriVer);
+	Offset.z = cosf(OriVer) * cosf(OriHor);
+	Offset.w = 0;
 
-	/*Cubes[0].TranslateAbsolute(Position.x, Position.y, Position.z);
-	Cubes[0].RotateXAbsolute(Orientation.x);
-	Cubes[0].RotateYAbsolute(Orientation.y);
-	Cubes[0].RotateZAbsolute(Orientation.z);
-	Cubes[0].ScaleAbsolute(Scaling.x);
-	Cubes[0].Update();
-
-	static float freq = DtTimer.GetDTSecs();
-	freq += 10.0f*DtTimer.GetDTSecs();
-
-	if (freq > 36.0f)
-		freq = 0.0f;
-
-	Cubes[1].TranslateAbsolute(1.5f*exp(0.1f*-freq)*sin(freq), 1.5f*exp(0.1f*-freq)*cos(freq), 0.0f);
-	Cubes[1].RotateXRelative(180.0f*DtTimer.GetDTSecs());
-	Cubes[1].RotateYRelative(180.0f*DtTimer.GetDTSecs());
-	Cubes[1].RotateZRelative(180.0f*DtTimer.GetDTSecs());
-	Cubes[1].ScaleAbsolute(0.15f);
-	Cubes[1].Update();
-
-	Triangles[0].Update();*/
+	View = LookAtRH(Position, Position + Offset, Up);
 
 	OnDraw();
 }
 
 void TestApp::OnDraw() {
-	pFramework->pVideoDriver->Clear();
-	
-	Cerdo[0].Draw();
-	//Cubes[1].Draw();
 
-//	Triangles[0].Draw();
+
+	CMatrix4D Proj;
+	Proj = PerspectiveFovRH(45 * 3.1416 / 180, 1280.0f / 720.0f, 0.1f, 1000.0f);
+	VP = Scaling(0.1f, 0.1f, 0.1f)*View*Proj;
+
+	pFramework->pVideoDriver->Clear();
+
+	Meshes[0].Draw();
+	Meshes[1].Draw();
+	//Triangles[0].Draw();
 
 	pFramework->pVideoDriver->SwapBuffers();
 }
 
 void TestApp::OnInput() {
-	
-	if (IManager.PressedKey(SDLK_UP)) {
-		Position.y += 1.0f*DtTimer.GetDTSecs();
+
+	/*if (IManager.PressedKey(SDLK_UP)) {
+	Position.y += 1.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_DOWN)) {
-		Position.y -= 1.0f*DtTimer.GetDTSecs();
+	Position.y -= 1.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_LEFT)) {
-		Position.x -= 1.0f*DtTimer.GetDTSecs();
+	Position.x -= 1.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_RIGHT)) {
-		Position.x += 1.0f*DtTimer.GetDTSecs();
+	Position.x += 1.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_z)) {
-		Position.z -= 1.0f*DtTimer.GetDTSecs();
+	Position.z -= 1.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_x)) {
-		Position.z += 1.0f*DtTimer.GetDTSecs();
+	Position.z += 1.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_KP_PLUS)) {
-		Scaling.x += 1.0f*DtTimer.GetDTSecs();
-		Scaling.y += 1.0f*DtTimer.GetDTSecs();
-		Scaling.z += 1.0f*DtTimer.GetDTSecs();
+	Scaling.x += 1.0f*DtTimer.GetDTSecs();
+	Scaling.y += 1.0f*DtTimer.GetDTSecs();
+	Scaling.z += 1.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_KP_MINUS)) {
-		Scaling.x -= 1.0f*DtTimer.GetDTSecs();
-		Scaling.y -= 1.0f*DtTimer.GetDTSecs();
-		Scaling.z -= 1.0f*DtTimer.GetDTSecs();
+	Scaling.x -= 1.0f*DtTimer.GetDTSecs();
+	Scaling.y -= 1.0f*DtTimer.GetDTSecs();
+	Scaling.z -= 1.0f*DtTimer.GetDTSecs();
 	}
 
-	if (IManager.PressedKey(SDLK_KP5)) {
-		Orientation.x -= 60.0f*DtTimer.GetDTSecs();
+	/*if (IManager.PressedKey(SDLK_KP5)) {
+	Orientation.x -= 60.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_KP6)) {
-		Orientation.x += 60.0f*DtTimer.GetDTSecs();
+	Orientation.x += 60.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_KP2)) {
-		Orientation.y -= 60.0f*DtTimer.GetDTSecs();
+	Orientation.y -= 60.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_KP3)) {
-		Orientation.y += 60.0f*DtTimer.GetDTSecs();
+	Orientation.y += 60.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_KP0)) {
-		Orientation.z -= 60.0f*DtTimer.GetDTSecs();
+	Orientation.z -= 60.0f*DtTimer.GetDTSecs();
 	}
 
 	if (IManager.PressedKey(SDLK_KP_PERIOD)) {
-		Orientation.z += 60.0f*DtTimer.GetDTSecs();
+	Orientation.z += 60.0f*DtTimer.GetDTSecs();
+	}*/
+
+	if (IManager.PressedKey(SDLK_UP))
+	{
+		CVector4D AuxOffset = Offset;
+		Position = Position + Normalize(AuxOffset) * 2 * DtTimer.GetDTSecs();
+	}
+	if (IManager.PressedKey(SDLK_DOWN))
+	{
+		CVector4D AuxOffset = Offset;
+		Position = Position - Normalize(AuxOffset) * 2 * DtTimer.GetDTSecs();
+	}
+	if (IManager.PressedKey(SDLK_RIGHT))
+	{
+		CVector4D AuxOffset = Offset;
+		CVector4D Dir = Cross3(Normalize(AuxOffset), Up);
+		Position = Position + Dir * 2 * DtTimer.GetDTSecs();
+	}
+	if (IManager.PressedKey(SDLK_LEFT))
+	{
+		CVector4D AuxOffset = Offset;
+		CVector4D Dir = Cross3(Up, Normalize(AuxOffset));
+		Position = Position + Dir * 2 * DtTimer.GetDTSecs();
 	}
 
-	
+	if (IManager.PressedKey(SDLK_w))
+	{
+		OriVer += 0.5*DtTimer.GetDTSecs();
+	}
+	if (IManager.PressedKey(SDLK_s))
+	{
+		OriVer -= 0.5*DtTimer.GetDTSecs();
+	}
+	if (IManager.PressedKey(SDLK_a))
+	{
+		OriHor += 0.5*DtTimer.GetDTSecs();
+	}
+	if (IManager.PressedKey(SDLK_d))
+	{
+		OriHor -= 0.5*DtTimer.GetDTSecs();
+	}
+	if (IManager.MouseMove)
+	{
+		float deltax = IManager.lastX - IManager.mx;
+		float deltay = IManager.lastY - IManager.my;
+		OriHor += deltax*DtTimer.GetDTSecs();
+		OriVer += deltay*DtTimer.GetDTSecs();
+
+	}
 }
 
 void TestApp::OnPause() {

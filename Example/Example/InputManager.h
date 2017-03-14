@@ -15,9 +15,15 @@ public:
 
 	bool	PressedKey(int key);
 	bool	PressedMouseButton(int mb);
-	
+
 	bool	KeyStates[2][MAXKEYS];
 	bool	MouseButtonStates[2][MAXMOUSEBUTTONS];
+
+	bool			MouseMove = 0;
+	int				mx = 0;
+	int				my = 0;
+	int				lastX = 0;
+	int				lastY = 0;
 
 };
 

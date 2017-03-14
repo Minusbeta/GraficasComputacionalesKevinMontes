@@ -2,7 +2,9 @@
 #include <PrimitiveManager.h>
 #include <PrimitiveInstance.h>
 
-#include <d3dx9math.h>
+//#include <d3dx9math.h>
+#include "CMatrix4D.h"
+#include "CVector4D.h"
 #include <Timer.h>
 
 class TestApp : public AppBase {
@@ -24,15 +26,18 @@ public:
 	PrimitiveManager PrimitiveMgr;
 	PrimitiveInst	Cubes[10];
 	PrimitiveInst	Triangles[10];
-	PrimitiveInst  Cerdo[1];
+	PrimitiveInst	Meshes[3];
 
-	D3DXVECTOR3		Position;
-	D3DXVECTOR3		Orientation;
-	D3DXVECTOR3		Scaling;
+	CVector4D		Position;
+	CVector4D		Orientation;
+	CVector4D		Offset;
+	CVector4D		Up;
+	float			OriVer;
+	float			OriHor;
 
-	D3DXMATRIX		View;
-	D3DXMATRIX		Projection;
-	D3DXMATRIX		VP;
+	CMatrix4D		View;
+	CMatrix4D		Projection;
+	CMatrix4D		VP;
 
 	Timer			DtTimer;
 };

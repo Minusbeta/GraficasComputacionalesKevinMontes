@@ -12,23 +12,23 @@ PrimitiveBase*	PrimitiveManager::GetPrimitive(unsigned int index) {
 }
 
 int  PrimitiveManager::CreateTriangle() {
-	PrimitiveBase *primitive = new TrangleGL();
+	PrimitiveBase *primitive = new Trangle();
 	primitive->Create();
 	primitives.push_back(primitive);
 	return (int)(primitives.size()-1);
 }
 
 int	 PrimitiveManager::CreateCube(){
-	PrimitiveBase *primitive = new CubeGL();
+	PrimitiveBase *primitive = new Cube();
 	primitive->Create();
 	primitives.push_back(primitive);
 	return (int)(primitives.size() - 1);
 }
 
-int PrimitiveManager::CreateCerdo()
+int PrimitiveManager::CreateCerdo(char *fname)
 {
 	PrimitiveBase *primitive = new CerdoGL();
-	primitive->Create();
+	primitive->Create(fname);
 	primitives.push_back(primitive);
 	return (int)(primitives.size() - 1);
 }

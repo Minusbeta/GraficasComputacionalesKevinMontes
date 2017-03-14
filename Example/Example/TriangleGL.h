@@ -1,12 +1,19 @@
 #ifndef UAD_TRIANGLEGL_H
 #define UAD_TRIANGLEGL_H
 
+#include "Config.h"
+
+#ifdef USING_OPENGL_ES
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
-#include <d3dx9math.h>
+#elif defined(USING_D3D11)
+#include "TextureD3D.h"
+#include <D3Dcompiler.h>
+#endif
 
 #include "PrimitiveBase.h"
 #include "UtilsGL.h"
+#include "CMatrix4D.h"
 
 
 //#define USE_ARRAY_OF_STRUCTS
@@ -18,30 +25,45 @@ struct triVertex {
 	float r, g, b;
 };
 #else
-	#ifdef USE_ARRAY_OF_STRUCTS
-	struct triVertex{
-		float x,y,z;
-		float r,g,b;
-	};
-	#else
-	struct triVertex {
-		float x, y, z;
-	};
-	#endif
+#ifdef USE_ARRAY_OF_STRUCTS
+struct triVertex {
+	float x, y, z;
+	float r, g, b;
+};
+#else
+struct triVertex {
+	float x, y, z;
+};
+#endif
 #endif
 
-class TrangleGL : public PrimitiveBase {
+class Trangle : public PrimitiveBase {
 public:
-	TrangleGL() : shaderID(0) {}
+	Trangle()
+#ifdef USING_OPENGL_ES
+		: shaderID(0) {}
+#elif defined(USING_D3D11)
+	{}
+#endif
+
+#ifdef USING_D3D11
+	struct CBuffer {
+		CMatrix4D WVP;
+		CMatrix4D World;
+	};
+#endif
+
 	void Create();
+	void Create(char *) {}
 	void Transform(float *t);
-	void Draw(float *t,float *vp);
+	void Draw(float *t, float *vp);
 	void Destroy();
 
+#ifdef USING_OPENGL_ES
 	GLuint	shaderID;
 	GLuint	vertexAttribLoc;
 	GLuint	colorAttribLoc;
-	
+
 	GLuint  matUniformLoc;
 #ifdef USE_VBO
 	triVertex		vertices[4];
@@ -49,14 +71,29 @@ public:
 	GLuint			VB;
 	GLuint			IB;
 #else
-	#ifdef USE_ARRAY_OF_STRUCTS
-		triVertex	vertices[6];
-	#else
-		triVertex	positions[6];
-		triVertex	colors[6];
-	#endif
+#ifdef USE_ARRAY_OF_STRUCTS
+	triVertex	vertices[6];
+#else
+	triVertex	positions[6];
+	triVertex	colors[6];
 #endif
-	D3DXMATRIX	transform;
+#endif
+#elif defined(USING_D3D11)
+	ComPtr<ID3D11Buffer>		IB;
+	ComPtr<ID3D11Buffer>		VB;
+	ComPtr<ID3D11VertexShader>  pVS;
+	ComPtr<ID3D11PixelShader>   pFS;
+	ComPtr<ID3DBlob>            VS_blob;
+	ComPtr<ID3DBlob>            FS_blob;
+	ComPtr<ID3D11InputLayout>   Layout;
+	ComPtr<ID3D11Buffer>        pd3dConstantBuffer;
+
+	Trangle::CBuffer	CnstBuffer;
+	triVertex		vertices[4];
+	unsigned short	indices[6];
+#endif
+
+	CMatrix4D	transform;
 };
 
 #endif
